@@ -37,8 +37,16 @@ RUN curl -L -o /usr/bin/kubectl https://storage.googleapis.com/kubernetes-releas
   && kubectl version --client
 
 # Install Helm
+# RUN set -x \
+#   && curl -fSL https://storage.googleapis.com/kubernetes-helm/helm-v${HELM_VERSION}-linux-amd64.tar.gz -o helm.tar.gz \
+#   && tar -xzvf helm.tar.gz \
+#   && mv linux-amd64/helm /usr/local/bin/ \
+#   && rm -rf linux-amd64 \
+#   && rm helm.tar.gz \
+#   && helm help
+
 RUN set -x \
-  && curl -fSL https://storage.googleapis.com/kubernetes-helm/helm-v${HELM_VERSION}-linux-amd64.tar.gz -o helm.tar.gz \
+  && curl -fSL https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz -o helm.tar.gz \
   && tar -xzvf helm.tar.gz \
   && mv linux-amd64/helm /usr/local/bin/ \
   && rm -rf linux-amd64 \
