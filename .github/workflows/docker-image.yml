@@ -1,21 +1,4 @@
-# name: Docker Image CI
-
-# on:
-#   push:
-#     branches: [ "main" ]
-#   pull_request:
-#     branches: [ "main" ]
-
-# jobs:
-#   build:
-#     runs-on: ubuntu-latest
-#     container:
-#       image: docker:19.03.12
-#     steps:
-#     - uses: actions/checkout@v3
-#     - name: Build the Docker image
-#       run: docker build . --file Dockerfile --tag k8s-deploy-helper-github:$(date +%s)
-
+# name: Docker Image 
 name: Build and Push Docker Image
 
 on:
