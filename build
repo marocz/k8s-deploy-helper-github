@@ -24,7 +24,7 @@ buildargs_from
 set_buildargs
 
 if [[ -n "$CI_REGISTRY_USER" ]]; then
-	echo "Logging to GitLab Container Registry with CI credentials..."
+	echo "Logging to Github Container Registry with CI credentials..."
 	docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
 	echo ""
 fi
@@ -44,7 +44,7 @@ if [ "x$1" != "x" ]; then
 		dockerbuild="docker build --pull --cache-from \"$CI_REGISTRY_IMAGE:$SHORT-latest\" -t \"$CI_REGISTRY_IMAGE:$SHORT-$CI_REGISTRY_TAG\" $buildargs -f $1 ."
 		eval $dockerbuild
 	fi
-	echo "Pushing to GitLab Container Registry..."
+	echo "Pushing to Github Container Registry..."
 	docker push "$CI_REGISTRY_IMAGE:$SHORT-$CI_REGISTRY_TAG"
 
 elif [[ -f Dockerfile ]]; then
@@ -60,7 +60,7 @@ elif [[ -f Dockerfile ]]; then
 		dockerbuild="docker build --pull --cache-from \"$CI_REGISTRY_IMAGE:latest\" -t \"$CI_REGISTRY_IMAGE:$CI_REGISTRY_TAG\" $buildargs ."
 		eval $dockerbuild
 	fi
-	echo "Pushing to GitLab Container Registry..."
+	echo "Pushing to GithubContainer Registry..."
 	docker push "$CI_REGISTRY_IMAGE:$CI_REGISTRY_TAG"
 else
     export DOCKER_HOST='tcp://docker:2375'
@@ -77,6 +77,6 @@ else
     docker commit "$CI_CONTAINER_NAME" "$CI_REGISTRY_IMAGE:$CI_REGISTRY_TAG"
     docker rm "$CI_CONTAINER_NAME" >/dev/null
 
-    echo "Pushing to GitLab Container Registry"
+    echo "Pushing to Github Container Registry"
     docker push "$CI_REGISTRY_IMAGE:$CI_REGISTRY_TAG"
 fi

@@ -12,7 +12,7 @@ export DEPLOY_ROOT_DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 source "$DEPLOY_ROOT_DIR/src/common.bash"
 
 if [[ -n "$CI_REGISTRY_USER" ]]; then
-	echo "Logging to GitLab Container Registry with CI credentials..."
+	echo "Logging to Github Container Registry with CI credentials..."
 	docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
 	echo ""
 fi
@@ -24,12 +24,12 @@ if [ "x$1" != "x" ]; then
 	export SHORT=$(echo "$1" | cut -d'-' -f2-)
 	docker pull $CI_REGISTRY_IMAGE:$SHORT-$CI_REGISTRY_TAG
         docker tag $CI_REGISTRY_IMAGE:$SHORT-$CI_REGISTRY_TAG $CI_REGISTRY_IMAGE:$SHORT-latest
-	echo "Pushing to GitLab Container Registry..."
+	echo "Pushing to Github Container Registry..."
         docker push $CI_REGISTRY_IMAGE:$SHORT-latest
 else
 	echo "Tagging $CI_REGISTRY_IMAGE:$CI_REGISTRY_TAG as $CI_REGISTRY_IMAGE:latest"
 	docker pull $CI_REGISTRY_IMAGE:$CI_REGISTRY_TAG
         docker tag $CI_REGISTRY_IMAGE:$CI_REGISTRY_TAG $CI_REGISTRY_IMAGE:latest
-	echo "Pushing to GitLab Container Registry..."
+	echo "Pushing to Github Container Registry..."
 	docker push "$CI_REGISTRY_IMAGE:latest"
 fi
