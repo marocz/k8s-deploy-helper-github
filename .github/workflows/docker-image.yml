@@ -25,4 +25,4 @@ jobs:
       with:
         context: .
         push: true
-        tags: blaromack/k8s-deploy-helper-github:1.0.0
+        tags: marocz/k8s-deploy-helper-github:1.0.0
