@@ -6,7 +6,7 @@ metadata:
   namespace: $KUBE_NAMESPACE
   labels:
     app: $CI_ENVIRONMENT_SLUG
-    pipeline_id: "$CI_PIPELINE_ID"
+    pipeline_id: "$GITHUB_RUN_NUMBER"
     build_id: "$GITHUB_RUN_ID"
     environment: $CI_ENVIRONMENT_SLUG
   annotations:
