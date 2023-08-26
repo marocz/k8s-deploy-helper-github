@@ -49,4 +49,4 @@ spec:
         env:
           {{SECRETS}}
       imagePullSecrets:
-        - name: gitlab-registry
+        - name: github-registry
