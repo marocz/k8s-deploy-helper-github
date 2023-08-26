@@ -43,10 +43,11 @@ create_kubeconfig() {
   cp kubeconfig /root/.kube/config
   cp kube.ca.pem /root/.kube/
   echo ""
+  helm init --client-only  --skip-refresh
   helm repo add stable https://charts.helm.sh/stable
   helm repo update
 
-  helm init --client-only  --skip-refresh
+  
 }
 
 ensure_deploy_variables() {
