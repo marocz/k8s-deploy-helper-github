@@ -36,7 +36,7 @@ create_kubeconfig() {
   kubectl config set-credentials github-deploy --token="$KUBE_TOKEN" \
     $KUBE_CLUSTER_OPTIONS
   kubectl config set-context github-deploy \
-    --cluster=github-deploy --user=github-deploy \
+    --cluster="$CLUSTER" --user=github-deploy \
     --namespace="$KUBE_NAMESPACE"
   kubectl config use-context github-deploy
   kubectl config get-contexts
