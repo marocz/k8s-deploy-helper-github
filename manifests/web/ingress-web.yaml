@@ -1,5 +1,5 @@
 ---
-apiVersion: apps/v1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: web-$CI_ENVIRONMENT_SLUG
@@ -23,5 +23,7 @@ spec:
       paths:
       - path: /
         backend:
-          serviceName: web-$CI_ENVIRONMENT_SLUG
-          servicePort: $PORT
+          service:
+            name: web-$CI_ENVIRONMENT_SLUG
+          service:
+            port: $PORT
