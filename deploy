@@ -24,6 +24,7 @@ CI_ENVIRONMENT_HOSTNAME="${CI_ENVIRONMENT_HOSTNAME/https:\/\//}"
 export CI_ENVIRONMENT_HOSTNAME=$CI_ENVIRONMENT_HOSTNAME
 
 echo "Creating namespace if it doesn't exist"
+kubectl get namespace
 kubectl get namespace $KUBE_NAMESPACE || cat <<EOF | kubectl apply -f -
 kind: Namespace
 apiVersion: v1
