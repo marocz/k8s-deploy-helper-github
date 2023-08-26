@@ -116,7 +116,7 @@ Docker Image: quay.io/lifechurch/k8s-deploy-helper:4.0.1
 
 * Canary stage was deploying manifests without ```track: stable``` label. This shouldn't happen. Fixed.
 
-* KDH no longer tries to create the namespace if it exists already. This was causing issues because GitLab is now supposed to be creating the namespace when you add the GitLab integration.
+* KDH no longer tries to create the namespace if it exists already. This was causing issues because Github is now supposed to be creating the namespace when you add the Github integration.
 
 # Version 4.0.0
 
@@ -124,7 +124,7 @@ Docker Image: quay.io/lifechurch/k8s-deploy-helper:4.0.0
 
 ## Backwards Incompatible Changes
 
-* Starting in GitLab 11.5, GitLab decided to start managing service accounts for namespaces automatically. This broke k8s-deploy-helper because KUBE_TOKEN was no longer the token you specified in the cluster. Moving forward, k8s-deploy-helper is not going to generate a Kubernetes configuration itself, it will rely on GitLab to create it for us.
+* Starting in Github 11.5, Github decided to start managing service accounts for namespaces automatically. This broke k8s-deploy-helper because KUBE_TOKEN was no longer the token you specified in the cluster. Moving forward, k8s-deploy-helper is not going to generate a Kubernetes configuration itself, it will rely on Github to create it for us.
 
 ## New Features
 
@@ -168,7 +168,7 @@ Docker Image: quay.io/lifechurch/k8s-deploy-helper:3.1.0
 # Version 3.0.0
 
 ## Backwards Incompatible Changes
-* kubectl - Due to a bug in kubectl, you'll need to delete the gitlab-registry secret in your namespace before you deploy. Make sure to do it right before you do a deploy to make it non-impactful. To do this, run ```kubectl delete secret gitlab-registry -n=yournamespace```.
+* kubectl - Due to a bug in kubectl, you'll need to delete the github-registry secret in your namespace before you deploy. Make sure to do it right before you do a deploy to make it non-impactful. To do this, run ```kubectl delete secret gitlab-registry -n=yournamespace```.
 
 * Deploy Token Usage - Previous versions used an actual GitLab username because GitLab didn't have persistent deploy tokens until recently. Now that this feature is in GitLab, we're going to stop using the shared credentials as this is much more secure. Create a deploy token at Settings->Repository->Deploy Tokens and make one named gitlab-deploy-token with read_registry access. As long as it's named gitlab-deploy-token, that's all you should have to do.
 

@@ -15,6 +15,7 @@ export DEPLOY_ROOT_DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 source "$DEPLOY_ROOT_DIR/src/common.bash"
 
 ensure_deploy_variables
+create_kubeconfig
 
 CI_ENVIRONMENT_HOSTNAME="${CI_ENVIRONMENT_URL}"
 CI_ENVIRONMENT_HOSTNAME="${CI_ENVIRONMENT_HOSTNAME/http:\/\//}"
@@ -32,7 +33,7 @@ EOF
 
 echo "Creating registry secret"
 kubectl create secret -n $KUBE_NAMESPACE \
-  docker-registry gitlab-registry \
+  docker-registry github-registry \
   --docker-server="$CI_REGISTRY" \
   --docker-username="$CI_DEPLOY_USER" \
   --docker-password="$CI_DEPLOY_PASSWORD" \

@@ -22,25 +22,49 @@ else
   export REAL_JOB_STAGE=$GITHUB_JOB
 fi
 
+create_kubeconfig() {
+  echo "Generating kubeconfig..."
+  export KUBECONFIG="$(pwd)/kubeconfig"
+  export KUBE_CLUSTER_OPTIONS=
+  if [[ -n "$KUBE_CA_PEM" ]]; then
+    echo "Using KUBE_CA_PEM..."
+    echo "$KUBE_CA_PEM" > "$(pwd)/kube.ca.pem"
+    export KUBE_CLUSTER_OPTIONS=--certificate-authority="$(pwd)/kube.ca.pem"
+  fi
+  kubectl config set-cluster github-deploy --server="$KUBE_URL" \
+    $KUBE_CLUSTER_OPTIONS
+  kubectl config set-credentials github-deploy --token="$KUBE_TOKEN" \
+    $KUBE_CLUSTER_OPTIONS
+  kubectl config set-context github-deploy \
+    --cluster=github-deploy --user=github-deploy \
+    --namespace="$KUBE_NAMESPACE"
+  kubectl config use-context github-deploy
+  mkdir /root/.kube || true
+  cp kubeconfig /root/.kube/config
+  cp kube.ca.pem /root/.kube/
+  echo ""
+  helm init --client-only
+}
+
 ensure_deploy_variables() {
     if [[ -z "$KUBE_URL" ]]; then
-      echo "ERROR: Missing KUBE_URL. Make sure to configure the Kubernetes Cluster in Operations->Kubernetes"
+      echo "ERROR: Missing KUBE_URL. Make sure to configure the Kubernetes Cluster Environment in Project Github Secrets/Input Parameters"
       exit 1
     fi
     if [[ -z "$KUBE_TOKEN" ]]; then
-      echo "ERROR: Missing KUBE_TOKEN. Make sure to configure the Kubernetes Cluster in Operations->Kubernetes"
+      echo "ERROR: Missing KUBE_TOKEN. Make sure to configure the Kubernetes Cluster Environment in Project Github Secrets/Input Parameters"
       exit 1
     fi
     if [[ -z "$KUBE_NAMESPACE" ]]; then
-      echo "ERROR: Missing KUBE_NAMESPACE. Make sure to configure the Kubernetes Cluster in Operations->Kubernetes"
+      echo "ERROR: Missing KUBE_NAMESPACE. Make sure to configure the Kubernetes Cluster Environment in Project Github Secrets/Input Parameters"
       exit 1
     fi
     if [[ -z "$CI_ENVIRONMENT_SLUG" ]]; then
-      echo "ERROR: Missing CI_ENVIRONMENT_SLUG. Make sure to configure the Kubernetes Cluster in Operations->Kubernetes"
+      echo "ERROR: Missing CI_ENVIRONMENT_SLUG. Make sure to configure the Kubernetes Cluster Environment in Project Github Secrets/Input Parameters"
       exit 1
     fi
     if [[ -z "$CI_ENVIRONMENT_URL" ]]; then
-      echo "ERROR: Missing CI_ENVIRONMENT_URL. Make sure to configure the Kubernetes Cluster in Operations->Kubernetes"
+      echo "ERROR: Missing CI_ENVIRONMENT_URL. Make sure to configure the Kubernetes Cluster Environment in Project Github Secrets/Input Parameters"
       exit 1
     fi
     if [[ -z "$CI_DEPLOY_USER" ]]; then
