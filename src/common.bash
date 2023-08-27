@@ -39,7 +39,7 @@ create_kubeconfig() {
     --cluster=github-deploy --user=github-deploy \
     --namespace="$KUBE_NAMESPACE"
   kubectl config use-context github-deploy
-  kubectl config get-contexts
+
 
   mkdir /root/.kube || true
   cp kubeconfig /root/.kube/config
