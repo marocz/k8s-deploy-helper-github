@@ -34,7 +34,7 @@ EOF
 
 echo "Creating registry secret"
 kubectl create secret -n $KUBE_NAMESPACE \
-  docker-registry gitlab-registry \
+  docker-registry github-registry \
   --docker-server="$CI_REGISTRY" \
   --docker-username="$CI_DEPLOY_USER" \
   --docker-password="$CI_DEPLOY_PASSWORD" \
