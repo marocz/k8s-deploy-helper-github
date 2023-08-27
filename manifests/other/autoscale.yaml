@@ -14,8 +14,4 @@ spec:
     name: {{PREFIX}}-$CI_ENVIRONMENT_SLUG
   minReplicas: ${{PREFIX}}_SCALE_MIN
   maxReplicas: ${{PREFIX}}_SCALE_MAX
-  metrics:
-  - type: Resource
-    resource:
-      name: cpu
-      targetAverageUtilization: ${{PREFIX}}_SCALE_CPU
+  targetCPUUtilizationPercentage:  ${{PREFIX}}_SCALE_CPU

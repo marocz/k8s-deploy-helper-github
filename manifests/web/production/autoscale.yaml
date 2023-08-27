@@ -14,8 +14,4 @@ spec:
     name: web-$CI_ENVIRONMENT_SLUG
   minReplicas: $SCALE_MIN
   maxReplicas: $SCALE_MAX
-  metrics:
-  - type: Resource
-    resource:
-      name: cpu
-      targetAverageUtilization: $SCALE_CPU
+  targetCPUUtilizationPercentage: $SCALE_CPU
