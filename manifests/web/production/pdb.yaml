@@ -6,7 +6,6 @@ metadata:
   labels:
     app: $CI_ENVIRONMENT_SLUG
     environment: $CI_ENVIRONMENT_SLUG
-    pipeline_id: "$CI_PIPELINE_ID"
     build_id: "$GITHUB_RUN_ID"
 spec:
   minAvailable: $PDB_MIN
