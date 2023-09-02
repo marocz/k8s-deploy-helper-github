@@ -1,38 +1,38 @@
-[![Docker Repository on Quay](https://quay.io/repository/lifechurch/k8s-deploy-helper/status "Docker Repository on Quay")](https://quay.io/repository/lifechurch/k8s-deploy-helper)
+[![Docker Repository on Docker](https://hub.docker.com/r/marocz/k8s-deploy-helper-github "Docker Repository on Docker Hub")](https://github.com/marocz/k8s-deploy-helper-github/actions/workflows/docker-image.yml/badge.svg)](https://github.com/marocz/k8s-deploy-helper-github/actions/workflows/docker-image.yml)
 
 # Description
-k8s-deploy-helper (KDH) is a tool to help build and deploy containerized applications into Kubernetes using GitLab CI along with templated manifest files. Major features include:
+k8s-deploy-helper (KDH) is a tool to help build and deploy containerized applications into Kubernetes using Github Action along with templated manifest files. Major features include:
 
-* Automated Kubernetes Secret Management using GitLab's UI. Version 3.0.0 can automatically insert secrets into Kubernetes manifests and Dockerfiles to lessen manual work.
-* Build via Heroku buildpacks or via Dockerfiles starting in 3.1.0.
-* Automated canary deployments. Dynamic creation is included in version 3.0.0.
+* Automated Kubernetes Secret Management using Gitlab's UI. Version 1.0.0 can automatically insert secrets into Kubernetes manifests and Dockerfiles to lessen manual work.
+* Build via Heroku buildpacks or via Dockerfiles starting in 1.0.0.
+* Automated canary deployments. Dynamic creation is included in version 1.0.0.
 * Automated review app deployments.
-* Automated deployment of applications using Heroku Procfile in 3.1.0.
+* Automated deployment of applications using Heroku Procfile in 1.0.0.
 * Deployment notifications to New Relic, Datadog and Slack.
 * Templated manifest deployments to Kubernetes living in the same repo as the code, giving developers more control.
 * Uses [kubeval](https://github.com/garethr/kubeval) to evaluate manifest yaml before any are deployed.
 * Easy, standardized image creation with build arguments and multiple Dockerfile support.
-* Standardized building conventions to allow for easy rollbacks through GitLab UI and better caching.
+* Standardized building conventions to allow for easy rollbacks through Github UI and better caching.
 
 
-This project is not endorsed or affiliated with GitLab in any way.
+This project is not endorsed or affiliated with Github in any way.
 
 # Examples
-In addition to this documentation, the best way to get started is to look at our [example repository](https://github.com/lifechurch/example-go).
+In addition to this documentation, the best way to get started is to look at our [example repository](https://github.com/marocz/spring-k8s-deploy-helper-examples).
 
 Need some help getting started? Feel free to join us on [Open Digerati Slack](https://join.slack.com/t/opendigerati/shared_invite/enQtMjU4MTcwOTIxMzMwLTcyYjQ4NWEwMzBlOGIzNDgyM2U5NzExYTY3NmI0MDE4MTRmMTQ5NjNhZWEyNDY3N2IyOWZjMDIxM2MwYjEwMmQ) in #k8s and we'll be more than happy to assist.
 
 # Why?
-GitLab's Auto DevOps initiative is amazing for getting simple apps running quickly, but for slightly more complex and production workloads, you need more control in the process. For instance, what if you have a pod with sidecar containers? What if you want a deployment of worker pods using something like celery for async work? You'll need to interact with Kubernetes at a deeper level to do stuff like this, and that's where our project comes in.
+Github's Action initiative is amazing for getting simple apps running quickly, but for slightly more complex and production workloads, you need more control in the process. For instance, what if you have a pod with sidecar containers? What if you want a deployment of worker pods using something like celery for async work? You'll need to interact with Kubernetes at a deeper level to do stuff like this, and that's where our project comes in.
 
-At Life.Church, we wanted to create a standardized tool along with corresponding conventions that our developers could use with GitLab CI to allow us to get up and running with manifest-based deployments as quickly and easily as possible. So, we took the work that GitLab started, and used it as the base of a new project that would meet our needs.
+At Lampnet, we wanted to create a standardized tool along with corresponding conventions that our developers could use with Github Action to allow us to get up and running with manifest-based deployments as quickly and easily as possible. So, we took the work that Life.Church started, and used it as the base of a new project that would meet our needs for Github Action.
 
 This tool was built akin to an airplane that was built while we were flying it. Our process is constantly maturing as we learn more about how to deploy into k8s. Our goal isn't to say 'this is the best way of deploying', but simply to share how we're doing it now, knowing that it will at least be a helpful starting place for others who are embarking on their Kubernetes journey.
 
 # Prerequisites
 
-* GitLab w/customizable runners
-* Kubernetes
+* Github Action runners
+* Kubernetes(GKE,EKS,AKS or others kubernetes)
 
 ## Configuring GitLab Runner
 
@@ -57,27 +57,41 @@ There is a lot of discussion around the best way to build docker images from wit
 
 ## Integrate Kubernetes into your Project
 
-In your GitLab Project, go to Operations->Kubernetes to give GitLab the ability to talk to your Kubernetes cluster. See GitLab's documentation on how to do this properly.
+In your Github Project, go to Settings->Secrets and variables to provide kubernetes secrets and environment variable to give Github Action the ability to talk to your Kubernetes cluster.
 
-## GitLab Credentials
-GitLab has finally introduced a way to have persistent deploy tokens that can fetch things from the Docker registry. k8s-deploy-helper 3.0 now uses this more secure token. You can create a deploy token at Settings->Repository->Deploy Tokens and make one named ```gitlab-deploy-token``` with read_registry access. It HAS to be called ```gitlab-deploy-token``` due to GitLab limitations. Once this token is created, k8s-deploy-helper will pick it up automatically.
+## Github Credentials
+Github has has an environment variable to manage secrets for talking to kurbernetes and passing environment secrets for different environment like staging, develop and production.
 
 # Building Docker Images
 
 Our goal was to make sure Docker containers could be built as quickly as possible without the developers having to micromanage each docker build command on a per-project basis.
 
-Here is a quick example from the .gitlab-ci.yml:
+Here is a quick example from the action.yml:
 
 ```
-build_container:
-  stage: build
-  script:
-    - command build
-  only:
-    - branches
+  deploy-develop:
+    needs: App_Tests
+    if: github.ref == 'refs/heads/main' && github.event.inputs.destroy == 'false' && github.event.inputs.is_canary_destroy == 'false' && github.event.inputs.is_canary == 'false'
+    runs-on: ubuntu-latest
+    env:
+      CI_REGISTRY_IMAGE: ghcr.io/marocz/spring-k8s-deploy-helper-examples
+      KUBE_URL: ${{ secrets.KUBE_URL }}
+      KUBE_TOKEN: ${{ secrets.KUBE_TOKEN }}
+      KUBE_CA_PEM: ${{ secrets.KUBE_CA_PEM }}
+      KUBE_NAMESPACE: '${{ github.event.inputs.namespace }}'
+      CI_ENVIRONMENT_SLUG: '${{ github.event.inputs.env_slug }}'
+      CI_ENVIRONMENT_URL: 'http://spiringboot.marocz.com'
+      CI_DEPLOY_USER: ${{ secrets.DOCKER_HUB_USERNAME }}
+      CI_DEPLOY_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
+      CI_REGISTRY: ghcr.io
+      CLUSTER: ${{ secrets.CLUSTER }}
+    - name: Build
+      run: |
+        command build
+
 ```
 
-Notice the script only has one command: ```command build``` - k8s-deploy-helper takes it from there, building the container, tagging it with a unique id (commit hash), and pushing it into the GitLab docker registry.
+Notice the script only has one command: ```command build``` - k8s-deploy-helper takes it from there, building the container, tagging it with a unique id (commit hash), and pushing it into the Github docker registry.
 
 ## Caching Docker FS Layers
 
@@ -87,7 +101,7 @@ If you're managing your own runners, and you only have one, then you may want to
 
 ## Build Arguments
 
-Sometimes you need to pass in arguments to containers at build time to do things like putting a token in place to pull from a private npm registry. To pass in build arguments, simply go to your GitLab project and go to Settings->CI/CD->Variables and create a variable in this form:
+Sometimes you need to pass in arguments to containers at build time to do things like putting a token in place to pull from a private npm registry. To pass in build arguments, simply go to your Github project and go to Settings->Secrets and variables and create a variable in this form:
 
 ```BUILDARG_npmtoken=1111```
 
@@ -110,40 +124,40 @@ Sometimes you may have an application that has logic that looks to make sure all
 If your project needs to build multiple Dockerfiles, the helper will automatically handle all the naming convention management to avoid collisions.  All you need to do is pass in the file name of the Dockerfile that is in the root of your repository. For example, if you have two Dockerfiles, Dockerfile-app, and Dockerfile-worker, this is what your .gitlab-ci.yml would look like:
 
 ```
-build_app:
-  stage: build
-  script:
-    - command build Dockerfile-app
-  only:
-    - branches
+  deploy-develop:
+    needs: App_Tests
+    if: github.ref == 'refs/heads/main' && github.event.inputs.destroy == 'false' && github.event.inputs.is_canary_destroy == 'false' && github.event.inputs.is_canary == 'false'
+    runs-on: ubuntu-latest
+    env:
+      CI_REGISTRY_IMAGE: ghcr.io/marocz/spring-k8s-deploy-helper-examples
+      KUBE_URL: ${{ secrets.KUBE_URL }}
+      KUBE_TOKEN: ${{ secrets.KUBE_TOKEN }}
+      KUBE_CA_PEM: ${{ secrets.KUBE_CA_PEM }}
+      KUBE_NAMESPACE: '${{ github.event.inputs.namespace }}'
+      CI_ENVIRONMENT_SLUG: '${{ github.event.inputs.env_slug }}'
+      CI_ENVIRONMENT_URL: 'http://spiringboot.marocz.com'
+      CI_DEPLOY_USER: ${{ secrets.DOCKER_HUB_USERNAME }}
+      CI_DEPLOY_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
+      CI_REGISTRY: ghcr.io
+      CLUSTER: ${{ secrets.CLUSTER }}
+    - name: Build App
+      run: |
+        command build Dockerfile-app
+    - name: Build Worker
+      run: |
+        command build  Dockerfile-worker
 
-build_worker:
-  stage: build
-  script:
-    - command build Dockerfile-worker
-  only:
-    - branches
+
 ```
 
 ## Buildpack Builds
-Starting in 3.1.0, KDH can build applications using [Heroku Buildpacks](https://devcenter.heroku.com/articles/buildpacks) via [herokuish](https://github.com/gliderlabs/herokuish). To do this, we run the latest herokuish docker container to make sure you have access to the latest buildpacks. Because we mount your code into the herokuish docker container, we need to use dind, so you'll need to make sure your GitLab runner has privileged access. All you need to do is not have a Dockerfile in your root, and we'll use the buildpack method. In the gitlab-ci, you'll need to expose docker:stable-dind as a service like so:
-
-```
-build:
-  stage: build
-  services:
-    - docker:stable-dind
-  script:
-    - command build
-  only:
-    - branches
-```
+Starting in 1.0.0, KDH can build applications using [Heroku Buildpacks](https://devcenter.heroku.com/articles/buildpacks) via [herokuish](https://github.com/gliderlabs/herokuish). To do this, we run the latest herokuish docker container to make sure you have access to the latest buildpacks. Because we mount your code into the herokuish docker container, we need to use dind, so you'll need to make sure your Github runner has privileged access. All you need to do is not have a Dockerfile in your root, and we'll use the buildpack method.
 
 You can use BUILDARG_ syntax from above to pass in build arguments, such as npm tokens, etc...
 
 # Kubernetes Deployment
 
-The key to success here is being able to use variables in your manifests. By using the right variables in the right places, you can have one single deployment manifest to maintain that can create deployments for review apps, staging, canaries, and production. See our [example repository](https://github.com/lifechurch/example-go) for more information on how to properly set up your manifests.
+The key to success here is being able to use variables in your manifests. By using the right variables in the right places, you can have one single deployment manifest to maintain that can create deployments for review apps, staging, canaries, and production. See our [example repository](https://github.com/marocz/spring-k8s-deploy-helper-examples) for more information on how to properly set up your manifests.
 
 ## Directory Structure
 To deploy applications into Kubernetes, you need to place your templated manifest files into a ```kubernetes``` directory at the root of your repository.
@@ -175,24 +189,24 @@ KDH will try to figure out the version of Kubernetes you are deploying to, and t
 Optionally, you can set the KDH_SKIP_KUBEVAL variable to true in order to skip the use of kubeval.
 
 ## Canary Deploys
-As of 3.0, k8s-deploy-helper will automatically support canary deployments via rewriting your deployment manifests. To use this functionality, you just need to be in a GitLab CI stage named canary, and k8s-deploy-helper will search for manifests where the ```track``` label is set to ```stable```.
+As of 3.0, k8s-deploy-helper will automatically support canary deployments via rewriting your deployment manifests. To use this functionality, you just need to be in a Github CI job named canary, and k8s-deploy-helper will search for manifests where the ```track``` label is set to ```stable```.
 
 The canary stage operates as a production deployment.
 
-Check out our (example repo)[https://www.github.com/lifechurch/example-go] to see how to set up your manifests to support this automation.
+Check out our (example repo)[https://github.com/marocz/spring-k8s-deploy-helper-examples] to see how to set up your manifests to support this automation.
 
 ## Environment Variable Substitution
-As of 7.0, k8s-deploy-helper added some logic that will only substitute environment variables that exist into your manifest files.  
+As of 1.0.0, k8s-deploy-helper added some logic that will only substitute environment variables that exist into your manifest files.  
 
 # Secret Management
 
-For people just getting started with deploying apps to Kubernetes, one of the first questions is 'how do I keep secrets out of my repositories?' k8s-deploy-helper has built-in secret management that allows you to securely use GitLab as the source of truth for all secrets.
+For people just getting started with deploying apps to Kubernetes, one of the first questions is 'how do I keep secrets out of my repositories?' k8s-deploy-helper has built-in secret management that allows you to securely use Github as the source of truth for all secrets.
 
 How k8s-deploy-helper handles secrets is probably the hardest part to wrap your minds around initially, so read these documents carefully.
 
 
 ## Secret Creation
-To create a secret, go to your GitLab project and go to Settings->CI/CD->Variables and create a variable with this name pattern:
+To create a secret, go to your Github project and go to Settings->Secrets and variabless and create a variable with this name pattern:
 
 ```SECRET_mykeyname```
 
@@ -208,7 +222,7 @@ In the example above, there would be an entry in the secret file named ```mykeyn
                 name: $KUBE_NAMESPACE-secrets-$STAGE
                 key: mykeyname
 ```
-**The important thing to note is that k8s-deploy-helper does the stripping of the SECRET_ prefix during secret creation TO RUN IN KUBERNETES. When dealing with stages outside of k8s-deploy-helper, like for instance, a testing stage or a stage that does database migrations, your variables are sent as is to your GitLab Runners, prefixes and all.**
+**The important thing to note is that k8s-deploy-helper does the stripping of the SECRET_ prefix during secret creation TO RUN IN KUBERNETES. When dealing with stages outside of k8s-deploy-helper, like for instance, a testing stage or a stage that does database migrations, your variables are sent as is to your Github Runners, prefixes and all.**
 
 ## Per-Stage Secret Creation
 
@@ -216,7 +230,7 @@ Sometimes you have secrets that have different values depending on if you're run
 
 For example, let's say you have a secret called ```api_env```, that needs to have different values depending on if you're deploying to one of three stages: review, staging, or production.
 
-Instead of creating a variable in GitLab called ```SECRET_api_env```, you would create three:
+Instead of creating a variable in Github called ```SECRET_api_env```, you would create three:
 
 ```
 REVIEW_api_env
@@ -237,7 +251,7 @@ Combined with a templated section like below, this would pull in the secret from
 ```
 ## Automated Secret Management in manifests
 
-New in version 3.0 is the {{SECRETS}} command. In the examples above, we gave the code that you would insert into manifests to make the secrets that k8s-deploy-helper creates in Kubernetes usable from within your deployments. This meant for adding a new secret, you would have to set the value of the secret in GitLab, and then add some code to the manifest to make it accessible.
+New in version 1.0.0 is the {{SECRETS}} command. In the examples above, we gave the code that you would insert into manifests to make the secrets that k8s-deploy-helper creates in Kubernetes usable from within your deployments. This meant for adding a new secret, you would have to set the value of the secret in GitLab, and then add some code to the manifest to make it accessible.
 
 Wanting to make developers lives easier and make GitLab the source of truth, we introduced the {{SECRETS}} command that you can insert into your templates at the appropriate place, and when we render your manifest templates, we will loop through all the secrets that k8s-deploy-helper created on your behalf, and insert the appropriate code into the manifest for you!
 
@@ -348,7 +362,7 @@ Per Instana's docs it's important to note:
 Based on that last note you can set these variables at a group level and not have to manage them at the project level.
 
 # Manifest-less Deploys
-Starting in 3.1.0, we added an option for manifest-less deploys to help us migrate away from Deis Workflow. In order for this to work, we had to make some very opinionated decisions regarding our manifests. These may not work for your organization. If this is the case, we encourage you to fork our project and make your own default manifests. They can be found in the manifests directory.
+Starting in 1.0.0, we added an option for manifest-less deploys to help us migrate away from Deis Workflow. In order for this to work, we had to make some very opinionated decisions regarding our manifests. These may not work for your organization. If this is the case, we encourage you to fork our project and make your own default manifests. They can be found in the manifests directory.
 
 ## Manifest-less Requirements
 
