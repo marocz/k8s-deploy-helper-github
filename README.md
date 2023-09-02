@@ -20,7 +20,7 @@ This project is not endorsed or affiliated with Github in any way.
 # Examples
 In addition to this documentation, the best way to get started is to look at our [example repository](https://github.com/marocz/spring-k8s-deploy-helper-examples).
 
-Need some help getting started? Feel free to join us on [Open Digerati Slack](https://join.slack.com/t/opendigerati/shared_invite/enQtMjU4MTcwOTIxMzMwLTcyYjQ4NWEwMzBlOGIzNDgyM2U5NzExYTY3NmI0MDE4MTRmMTQ5NjNhZWEyNDY3N2IyOWZjMDIxM2MwYjEwMmQ) in #k8s and we'll be more than happy to assist.
+Need some help getting started? Feel free to join us on [Kubernetes Deploy Helper for Github Action](https://join.slack.com/t/kubernetesdep-ehc3827/shared_invite/zt-22hstzvl1-~lskdQk1sJzYA5yn7~vavQ) in #k8s and we'll be more than happy to assist.
 
 # Why?
 Github's Action initiative is amazing for getting simple apps running quickly, but for slightly more complex and production workloads, you need more control in the process. For instance, what if you have a pod with sidecar containers? What if you want a deployment of worker pods using something like celery for async work? You'll need to interact with Kubernetes at a deeper level to do stuff like this, and that's where our project comes in.
