@@ -422,7 +422,7 @@ Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduc
 # Versioning
 To make sure the community can use this project with their sanity intact, we will be committing to incrementing major versions when we introduce breaking changes.  We anticipate this happening frequently, as this tool is still under heavy development.
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/lifechurch/k8s-deploy-helper/tags).
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/marocz/k8s-deploy-helper-github/tags).
 
 # License
 
