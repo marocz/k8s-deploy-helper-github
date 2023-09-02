@@ -1,4 +1,4 @@
-[![Docker Repository on Docker](https://hub.docker.com/r/marocz/k8s-deploy-helper-github "Docker Repository on Docker Hub")](https://github.com/marocz/k8s-deploy-helper-github/actions/workflows/docker-image.yml/badge.svg)](https://github.com/marocz/k8s-deploy-helper-github/actions/workflows/docker-image.yml)
+[![Docker Repository on Docker](https://hub.docker.com/r/marocz/k8s-deploy-helper-github "Docker Repository on Docker Hub")](https://github.com/marocz/k8s-deploy-helper-github/actions/workflows/docker-image.yml/badge.svg)[Kubernetes deployment helper status](https://github.com/marocz/k8s-deploy-helper-github/actions/workflows/docker-image.yml)
 
 # Description
 k8s-deploy-helper (KDH) is a tool to help build and deploy containerized applications into Kubernetes using Github Action along with templated manifest files. Major features include:
