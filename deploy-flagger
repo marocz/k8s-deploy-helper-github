@@ -145,9 +145,9 @@ if [ -d "$CI_PROJECT_DIR/kubernetes" ]; then
   # Start applying templates to Kubernetes
   for filename in /tmp/kubernetes/*.yaml; do
     # Grab the kind of manifest we're dealing with (ie, deployment, statefulset, etc..)
-    manifest_kind=$(yq eval  'kind' $filename )
+    manifest_kind=$(yq eval  '.kind' $filename )
     # Grab the track label, which GitLab uses to tell if something is a canary or not
-    track=$(yq read $filename metadata.labels.track)
+    track=$(yq eval 'metadata.labels.track' $filename )
     shopt -s nocasematch
     # Build a list of application deployments we need to monitor and apply
     if [[ "$manifest_kind" == "deployment" ]] || [[ "$manifest_kind" == "statefulset" ]] || [[ "$manifest_kind" == "daemonset" ]] || [[ "$manifest_kind" == "canary" ]]; then
