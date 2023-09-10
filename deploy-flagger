@@ -167,7 +167,7 @@ if [ -d "$CI_PROJECT_DIR/kubernetes" ]; then
       fi
 
       # Add deployment to rollout
-      manifest_name=$(yq read $filename metadata.name)
+      manifest_name=$(yq eval '.metadata.name' $filename )
       rollout+=("$manifest_kind/$manifest_name")
     fi
 
