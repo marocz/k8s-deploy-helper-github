@@ -147,7 +147,7 @@ if [ -d "$CI_PROJECT_DIR/kubernetes" ]; then
     # Grab the kind of manifest we're dealing with (ie, deployment, statefulset, etc..)
     manifest_kind=$(yq eval  '.kind' $filename )
     # Grab the track label, which GitLab uses to tell if something is a canary or not
-    track=$(yq eval 'metadata.labels.track' $filename )
+    track=$(yq eval '.metadata.labels.track' $filename )
     shopt -s nocasematch
     # Build a list of application deployments we need to monitor and apply
     if [[ "$manifest_kind" == "deployment" ]] || [[ "$manifest_kind" == "statefulset" ]] || [[ "$manifest_kind" == "daemonset" ]] || [[ "$manifest_kind" == "canary" ]]; then
