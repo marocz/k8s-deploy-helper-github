@@ -2,7 +2,7 @@ FROM docker:18.06.3-ce-dind
 
 ENV HELM_VERSION="3.8.0" \
   KUBECTL_VERSION="1.23.3" \
-  YQ_VERSION="4.20.1" \ 
+  YQ_VERSION="4.35.1" \ 
   KUBEVAL_VERSION="0.16.1" \ 
   GLIBC_VERSION="2.28-r0" \
   PATH=/opt/kubernetes-deploy:$PATH
@@ -23,10 +23,10 @@ RUN wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/s
   && rm glibc-$GLIBC_VERSION.apk
 
 # Install yq
-RUN wget -q -O /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/$YQ_VERSION/yq_linux_amd64 && chmod +x /usr/local/bin/yq
+RUN wget -q -O /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/v$YQ_VERSION/yq_linux_amd64 && chmod +x /usr/local/bin/yq
 
 # Install kubeval
-RUN wget https://github.com/garethr/kubeval/releases/download/$KUBEVAL_VERSION/kubeval-linux-amd64.tar.gz \
+RUN wget https://github.com/garethr/kubeval/releases/download/v$KUBEVAL_VERSION/kubeval-linux-amd64.tar.gz \
   && tar xvfzmp kubeval-linux-amd64.tar.gz \
   && mv kubeval /usr/local/bin \
   && chmod +x /usr/local/bin/kubeval
