@@ -1,9 +1,9 @@
 FROM docker:18.06.3-ce-dind
 
-ENV HELM_VERSION="2.14.1" \
-  KUBECTL_VERSION="1.12.6" \
-  YQ_VERSION="2.1.1" \ 
-  KUBEVAL_VERSION="0.12.0" \ 
+ENV HELM_VERSION="3.8.0" \
+  KUBECTL_VERSION="1.23.3" \
+  YQ_VERSION="4.20.1" \ 
+  KUBEVAL_VERSION="0.16.1" \ 
   GLIBC_VERSION="2.28-r0" \
   PATH=/opt/kubernetes-deploy:$PATH
 
